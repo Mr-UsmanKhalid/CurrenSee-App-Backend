@@ -1,8 +1,13 @@
 require('dotenv').config();
 const mysql = require('mysql2/promise');
 
+const host = process.env.DB_HOST || '127.0.0.1';
+const useSsl =
+  String(process.env.DB_SSL).trim().toLowerCase() === 'true' ||
+  host.includes('tidbcloud.com');
+
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || '127.0.0.1',
+  host,
   port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
@@ -11,10 +16,7 @@ const pool = mysql.createPool({
   connectionLimit: process.env.VERCEL ? 3 : 10,
   queueLimit: 0,
   dateStrings: true,
-  ssl:
-    process.env.DB_SSL === 'true'
-      ? { minVersion: 'TLSv1.2', rejectUnauthorized: true }
-      : undefined,
+  ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined,
 });
 
 module.exports = pool;
