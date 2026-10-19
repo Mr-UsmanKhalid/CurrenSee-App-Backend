@@ -24,6 +24,23 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/support', supportRoutes);
 
+
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Mobile apps and tools like Postman send no Origin header
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return cb(null, true);
+      }
+      cb(new Error('Not allowed by CORS'));
+    },
+  })
+);
 // Fallback error handler
 app.use((err, req, res, next) => {
   console.error(err);
