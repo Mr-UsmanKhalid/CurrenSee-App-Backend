@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const pool = require('./db'); // change this path to where your pool file is, e.g. './config/db'
+const pool = require('./config/db.js'); // change this path to where your pool file is, e.g. './config/db'
 
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/users.routes');
